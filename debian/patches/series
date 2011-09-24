@@ -5,11 +5,9 @@ distutils-install-layout.diff
 locale-module.diff
 distutils-link.diff
 distutils-sysconfig.diff
-test-sundry.diff
 tkinter-import.diff
 link-opt.diff
 debug-build.diff
-profile-doc.diff
 webbrowser.diff
 linecache.diff
 setup-modules.diff

@@ -2,7 +2,7 @@
 
 --- a/configure.in
 +++ b/configure.in
-@@ -1791,7 +1791,7 @@
+@@ -1812,7 +1812,7 @@
  			fi
  		fi
  		;;
@@ -11,7 +11,7 @@
  	BSD/OS*/4*) LDSHARED="gcc -shared";;
  	FreeBSD*)
  		if [[ "`$CC -dM -E - </dev/null | grep __ELF__`" != "" ]]
-@@ -1876,7 +1876,7 @@
+@@ -1897,7 +1897,7 @@
  	    LINKFORSHARED="-Wl,-E -Wl,+s";;
  #	    LINKFORSHARED="-Wl,-E -Wl,+s -Wl,+b\$(BINLIBDEST)/lib-dynload";;
  	BSD/OS/4*) LINKFORSHARED="-Xlinker -export-dynamic";;

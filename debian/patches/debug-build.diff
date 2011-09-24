@@ -37,7 +37,7 @@
  def parse_config_h(fp, g=None):
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -99,8 +99,8 @@
+@@ -102,8 +102,8 @@
  # Detailed destination directories
  BINLIBDEST=	$(LIBDIR)/python$(VERSION)
  LIBDEST=	$(SCRIPTDIR)/python$(VERSION)
@@ -48,7 +48,7 @@
  LIBP=		$(LIBDIR)/python$(VERSION)
  
  # Symbols used for using shared libraries
-@@ -113,6 +113,8 @@
+@@ -116,6 +116,8 @@
  EXE=		@EXEEXT@
  BUILDEXE=	@BUILDEXEEXT@
  
@@ -57,7 +57,7 @@
  # Short name and location for Mac OS X Python framework
  UNIVERSALSDK=@UNIVERSALSDK@
  PYTHONFRAMEWORK=	@PYTHONFRAMEWORK@
-@@ -433,7 +435,7 @@
+@@ -436,7 +438,7 @@
  	$(AR) $(ARFLAGS) $@ $(MODOBJS)
  	$(RANLIB) $@
  
@@ -66,7 +66,7 @@
  	if test $(INSTSONAME) != $(LDLIBRARY); then \
  		$(BLDSHARED) $(LDFLAGS) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
  		$(LN) -f $(INSTSONAME) $@; \
-@@ -959,8 +961,8 @@
+@@ -964,8 +966,8 @@
  	$(INSTALL_DATA) pyconfig.h $(DESTDIR)$(CONFINCLUDEPY)/pyconfig.h
  
  # Install the library and miscellaneous stuff needed for extending/embedding
@@ -107,7 +107,7 @@
  #endif
 --- a/Python/sysmodule.c
 +++ b/Python/sysmodule.c
-@@ -1438,6 +1438,12 @@
+@@ -1389,6 +1389,12 @@
                          PyUnicode_FromString("legacy"));
  #endif
  
@@ -142,7 +142,7 @@
  	  RUNSHARED=LD_LIBRARY_PATH=`pwd`:${LD_LIBRARY_PATH}
  	  case $ac_sys_system in
  	      FreeBSD*)
-@@ -820,6 +820,12 @@
+@@ -835,6 +835,12 @@
  fi],
  [AC_MSG_RESULT(no)])
  
@@ -155,7 +155,7 @@
  # XXX Shouldn't the code above that fiddles with BASECFLAGS and OPT be
  # merged with this chunk of code?
  
-@@ -1704,7 +1710,7 @@
+@@ -1725,7 +1731,7 @@
  		esac
  		;;
  	CYGWIN*)   SO=.dll;;

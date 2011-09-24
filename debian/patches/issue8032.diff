@@ -696,7 +696,7 @@
 +    test_main()
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -377,7 +377,7 @@
+@@ -380,7 +380,7 @@
  
  # Default target
  all:		build_all
@@ -705,7 +705,7 @@
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -452,6 +452,16 @@
+@@ -455,6 +455,16 @@
  libpython$(VERSION).sl: $(LIBRARY_OBJS)
  	$(LDSHARED) $(LDFLAGS) -o $@ $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST)
  
@@ -722,7 +722,7 @@
  # This rule is here for OPENSTEP/Rhapsody/MacOSX. It builds a temporary
  # minimal framework (not including the Lib directory and such) in the current
  # directory.
-@@ -1258,5 +1268,6 @@
+@@ -1263,5 +1273,6 @@
  .PHONY: frameworkinstallmaclib frameworkinstallapps frameworkinstallunixtools
  .PHONY: frameworkaltinstallunixtools recheck autoconf clean clobber distclean 
  .PHONY: smelly funny patchcheck

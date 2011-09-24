@@ -216,7 +216,7 @@
      elif os.name == "nt":
 --- a/Lib/site.py
 +++ b/Lib/site.py
-@@ -252,6 +252,13 @@
+@@ -262,6 +262,13 @@
  
      if ENABLE_USER_SITE and os.path.isdir(USER_SITE):
          addsitedir(USER_SITE, known_paths)
