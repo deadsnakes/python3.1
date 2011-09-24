@@ -1,0 +1,18 @@
+# DP: Fix profiled build; don't use Python/thread.gc*, gcc complains.
+# DP: Ignore errors in the profile task.
+
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -395,9 +395,11 @@
+ 	$(MAKE) all CFLAGS="$(CFLAGS) -fprofile-generate" LIBS="$(LIBS) -lgcov"
+ 
+ run_profile_task:
+-	./$(BUILDPYTHON) $(PROFILE_TASK)
++	-./$(BUILDPYTHON) $(PROFILE_TASK)
+ 
+ build_all_use_profile:
++	: # FIXME: gcc error
++	rm -f Python/thread.gc* Modules/_ssl.gc*
+ 	$(MAKE) all CFLAGS="$(CFLAGS) -fprofile-use"
+ 
+ coverage:

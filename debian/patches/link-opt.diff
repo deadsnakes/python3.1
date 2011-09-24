@@ -1,0 +1,22 @@
+# DP: Call the linker with -O1 -Bsymbolic-functions
+
+--- a/configure.in
++++ b/configure.in
+@@ -1791,7 +1791,7 @@
+ 			fi
+ 		fi
+ 		;;
+-	Linux*|GNU*|QNX*) LDSHARED='$(CC) -shared';;
++	Linux*|GNU*|QNX*) LDSHARED='$(CC) -shared -Wl,-O1 -Wl,-Bsymbolic-functions';;
+ 	BSD/OS*/4*) LDSHARED="gcc -shared";;
+ 	FreeBSD*)
+ 		if [[ "`$CC -dM -E - </dev/null | grep __ELF__`" != "" ]]
+@@ -1876,7 +1876,7 @@
+ 	    LINKFORSHARED="-Wl,-E -Wl,+s";;
+ #	    LINKFORSHARED="-Wl,-E -Wl,+s -Wl,+b\$(BINLIBDEST)/lib-dynload";;
+ 	BSD/OS/4*) LINKFORSHARED="-Xlinker -export-dynamic";;
+-	Linux*|GNU*) LINKFORSHARED="-Xlinker -export-dynamic";;
++	Linux*|GNU*) LINKFORSHARED="-Xlinker -export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions";;
+ 	# -u libsys_s pulls in all symbols in libsys
+ 	Darwin/*) 
+ 		LINKFORSHARED="$extra_undefs -framework CoreFoundation"

@@ -1,0 +1,36 @@
+# DP: Assume working semaphores, don't rely on running kernel for the check.
+
+--- a/configure.in
++++ b/configure.in
+@@ -3486,6 +3486,11 @@
+    ac_cv_posix_semaphores_enabled=no,
+    ac_cv_posix_semaphores_enabled=yes)
+ )
++case $ac_sys_system in
++  Linux*)
++    # assume enabled, see https://launchpad.net/bugs/630511
++    ac_cv_posix_semaphores_enabled=yes
++esac
+ AC_MSG_RESULT($ac_cv_posix_semaphores_enabled)
+ if test $ac_cv_posix_semaphores_enabled = no
+ then
+@@ -3517,10 +3522,15 @@
+   return res==-1 ? 1 : 0;
+ }
+ ]
+-,AC_MSG_RESULT(no),
+- AC_MSG_RESULT(yes)
+-  AC_DEFINE(HAVE_BROKEN_SEM_GETVALUE, 1, define to 1 if your sem_getvalue is broken.)
+-)
++,AC_MSG_RESULT(no),[
++  case $ac_sys_system in
++    Linux*) # assume enabled, see https://launchpad.net/bugs/630511
++      AC_MSG_RESULT(no);;
++    *)
++      AC_MSG_RESULT(yes)
++      AC_DEFINE(HAVE_BROKEN_SEM_GETVALUE, 1, [define to 1 if your sem_getvalue is broken.])
++  esac
++])
+ 
+ # determine what size digit to use for Python's longs
+ AC_MSG_CHECKING([digit size for Python's longs])

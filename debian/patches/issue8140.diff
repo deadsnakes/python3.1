@@ -1,0 +1,258 @@
+# DP: Issue #8140: extend compileall to compile single files. Add -i option.
+
+--- a/Lib/compileall.py
++++ b/Lib/compileall.py
+@@ -17,7 +17,7 @@
+ import struct
+ import imp
+ 
+-__all__ = ["compile_dir","compile_path"]
++__all__ = ["compile_dir","compile_file","compile_path"]
+ 
+ def compile_dir(dir, maxlevels=10, ddir=None,
+                 force=0, rx=None, quiet=0):
+@@ -48,50 +48,10 @@
+             dfile = os.path.join(ddir, name)
+         else:
+             dfile = None
+-        if rx is not None:
+-            mo = rx.search(fullname)
+-            if mo:
+-                continue
+-        if os.path.isfile(fullname):
+-            head, tail = name[:-3], name[-3:]
+-            if tail == '.py':
+-                if not force:
+-                    try:
+-                        mtime = int(os.stat(fullname).st_mtime)
+-                        expect = struct.pack('<4sl', imp.get_magic(), mtime)
+-                        cfile = fullname + (__debug__ and 'c' or 'o')
+-                        with open(cfile, 'rb') as chandle:
+-                            actual = chandle.read(8)
+-                        if expect == actual:
+-                            continue
+-                    except IOError:
+-                        pass
+-                if not quiet:
+-                    print('Compiling', fullname, '...')
+-                try:
+-                    ok = py_compile.compile(fullname, None, dfile, True)
+-                except KeyboardInterrupt:
+-                    raise KeyboardInterrupt
+-                except py_compile.PyCompileError as err:
+-                    if quiet:
+-                        print('*** Error compiling', fullname, '...')
+-                    else:
+-                        print('*** ', end='')
+-                    # escape non-printable characters in msg
+-                    msg = err.msg.encode(sys.stdout.encoding, 'backslashreplace')
+-                    msg = msg.decode(sys.stdout.encoding)
+-                    print(msg)
+-                    success = 0
+-                except (SyntaxError, UnicodeError, IOError) as e:
+-                    if quiet:
+-                        print('*** Error compiling', fullname, '...')
+-                    else:
+-                        print('*** ', end='')
+-                    print(e.__class__.__name__ + ':', e)
+-                    success = 0
+-                else:
+-                    if ok == 0:
+-                        success = 0
++
++        if not os.path.isdir(fullname):
++            if not compile_file(fullname, ddir, force, rx, quiet):
++                success = 0
+         elif maxlevels > 0 and \
+              name != os.curdir and name != os.pardir and \
+              os.path.isdir(fullname) and \
+@@ -101,6 +61,67 @@
+                 success = 0
+     return success
+ 
++def compile_file(fullname, ddir=None, force=0, rx=None, quiet=0):
++    """Byte-compile file.
++    file:      the file to byte-compile
++    ddir:      if given, purported directory name (this is the
++               directory name that will show up in error messages)
++    force:     if 1, force compilation, even if timestamps are up-to-date
++    quiet:     if 1, be quiet during compilation
++
++    """
++    success = 1
++    name = os.path.basename(fullname)
++    if ddir is not None:
++        dfile = os.path.join(ddir, name)
++    else:
++        dfile = None
++    if rx is not None:
++        mo = rx.search(fullname)
++        if mo:
++            return success
++    if os.path.isfile(fullname):
++        head, tail = name[:-3], name[-3:]
++        if tail == '.py':
++            if not force:
++                try:
++                    mtime = int(os.stat(fullname).st_mtime)
++                    expect = struct.pack('<4sl', imp.get_magic(), mtime)
++                    cfile = fullname + (__debug__ and 'c' or 'o')
++                    with open(cfile, 'rb') as chandle:
++                        actual = chandle.read(8)
++                    if expect == actual:
++                        return success
++                except IOError:
++                    pass
++            if not quiet:
++                print('Compiling', fullname, '...')
++            try:
++                ok = py_compile.compile(fullname, None, dfile, True)
++            except KeyboardInterrupt:
++                raise KeyboardInterrupt
++            except py_compile.PyCompileError as err:
++                if quiet:
++                    print('*** Error compiling', fullname, '...')
++                else:
++                    print('*** ', end='')
++                # escape non-printable characters in msg
++                msg = err.msg.encode(sys.stdout.encoding, 'backslashreplace')
++                msg = msg.decode(sys.stdout.encoding)
++                print(msg)
++                success = 0
++            except (SyntaxError, UnicodeError, IOError) as e:
++                if quiet:
++                    print('*** Error compiling', fullname, '...')
++                else:
++                    print('*** ', end='')
++                print(e.__class__.__name__ + ':', e)
++                success = 0
++            else:
++                if ok == 0:
++                    success = 0
++    return success
++
+ def compile_path(skip_curdir=1, maxlevels=0, force=0, quiet=0):
+     """Byte-compile all module on sys.path.
+ 
+@@ -121,15 +142,34 @@
+                                               force, quiet=quiet)
+     return success
+ 
++def expand_args(args, flist):
++    """read names in flist and append to args"""
++    expanded = args[:]
++    if flist:
++        try:
++            if flist == '-':
++                fd = sys.stdin
++            else:
++                fd = open(flist)
++            while 1:
++                line = fd.readline()
++                if not line:
++                    break
++                expanded.append(line[:-1])
++        except IOError:
++            print("Error reading file list %s" % flist)
++            raise
++    return expanded
++
+ def main():
+     """Script main program."""
+     import getopt
+     try:
+-        opts, args = getopt.getopt(sys.argv[1:], 'lfqd:x:')
++        opts, args = getopt.getopt(sys.argv[1:], 'lfqd:x:i:')
+     except getopt.error as msg:
+         print(msg)
+         print("usage: python compileall.py [-l] [-f] [-q] [-d destdir] " \
+-              "[-x regexp] [directory ...]")
++              "[-x regexp] [-i list] [directory|file ...]")
+         print("-l: don't recurse down")
+         print("-f: force rebuild even if timestamps are up-to-date")
+         print("-q: quiet operation")
+@@ -137,12 +177,14 @@
+         print("   if no directory arguments, -l sys.path is assumed")
+         print("-x regexp: skip files matching the regular expression regexp")
+         print("   the regexp is searched for in the full path of the file")
++        print("-i list: expand list with its content (file and directory names)")
+         sys.exit(2)
+     maxlevels = 10
+     ddir = None
+     force = 0
+     quiet = 0
+     rx = None
++    flist = None
+     for o, a in opts:
+         if o == '-l': maxlevels = 0
+         if o == '-d': ddir = a
+@@ -151,17 +193,28 @@
+         if o == '-x':
+             import re
+             rx = re.compile(a)
++        if o == '-i': flist = a
+     if ddir:
+-        if len(args) != 1:
++        if len(args) != 1 and not os.path.isdir(args[0]):
+             print("-d destdir require exactly one directory argument")
+             sys.exit(2)
+     success = 1
+     try:
+-        if args:
+-            for dir in args:
+-                if not compile_dir(dir, maxlevels, ddir,
+-                                   force, rx, quiet):
+-                    success = 0
++        if args or flist:
++            try:
++                if flist:
++                    args = expand_args(args, flist)
++            except IOError:
++                success = 0
++            if success:
++                for arg in args:
++                    if os.path.isdir(arg):
++                        if not compile_dir(arg, maxlevels, ddir,
++                                           force, rx, quiet):
++                            success = 0
++                    else:
++                        if not compile_file(arg, ddir, force, rx, quiet):
++                            success = 0
+         else:
+             success = compile_path()
+     except KeyboardInterrupt:
+--- a/Lib/test/test_compileall.py
++++ b/Lib/test/test_compileall.py
+@@ -21,6 +21,9 @@
+         self.bc_path = self.source_path + ('c' if __debug__ else 'o')
+         with open(self.source_path, 'w') as file:
+             file.write('x = 123\n')
++        self.source_path2 = os.path.join(self.directory, '_test2.py')
++        self.bc_path2 = self.source_path2 + ('c' if __debug__ else 'o')
++        shutil.copyfile(self.source_path, self.source_path2)
+ 
+     def tearDown(self):
+         shutil.rmtree(self.directory)
+@@ -56,6 +59,22 @@
+         # Test a change in mtime leads to a new .pyc.
+         self.recreation_check(b'\0\0\0\0')
+ 
++    def test_compile_files(self):
++        # Test compiling a single file, and complete directory
++        for fn in (self.bc_path, self.bc_path2):
++            try:
++                os.unlink(fn)
++            except:
++                pass
++        compileall.compile_file(self.source_path, force=False, quiet=True)
++        self.assertTrue(os.path.isfile(self.bc_path) \
++                        and not os.path.isfile(self.bc_path2))
++        os.unlink(self.bc_path)
++        compileall.compile_dir(self.directory, force=False, quiet=True)
++        self.assertTrue(os.path.isfile(self.bc_path) \
++                        and os.path.isfile(self.bc_path2))
++        os.unlink(self.bc_path)
++        os.unlink(self.bc_path2)
+ 
+ class EncodingTest(unittest.TestCase):
+     'Issue 6716: compileall should escape source code when printing errors to stdout.'

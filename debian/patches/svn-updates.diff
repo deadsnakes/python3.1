@@ -1,0 +1,6 @@
+#! /bin/sh -e
+
+# DP: SVN updates of the 3.1 branch (until 2010-xx-xx).
+
+# svn diff http://svn.python.org/projects/python/tags/r312 http://svn.python.org/projects/python/branches/release31-maint | filterdiff --exclude=Lib/pstats.py --exclude=Lib/profile.py --exclude=.*ignore --addoldprefix=a/ --addnewprefix=b/ --remove-timestamps | grep -v '^[I=]*'
+
