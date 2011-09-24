@@ -8,6 +8,7 @@ export SHELL = /bin/bash
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+DEB_BUILD_OPTIONS := "nocheck nobench"
 DEB_HOST_ARCH		?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 DEB_HOST_ARCH_OS	?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
 
@@ -39,7 +40,8 @@ ifneq (,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
   NJOBS := -j $(subst parallel=,,$(filter parallel=%,$(subst $(COMMA), ,$(DEB_BUILD_OPTIONS))))
 endif
 
-distribution := $(shell lsb_release -is)
+#distribution := $(shell lsb_release -is)
+distribution := Ubuntu-PPA
 
 export VER=3.1
 export NVER=3.2
@@ -69,7 +71,8 @@ MIN_ENCODINGS := $(foreach i, \
 			encodings/$(i)) \
 		 codecs.py stringprep.py
 
-with_tk := no
+with_tk := yes
+with_gdbm := yes
 with_interp := static
 #with_interp := shared
 
@@ -120,6 +123,9 @@ p_base	:= $(PVER)
 p_min	:= $(PVER)-minimal
 p_lib	:= lib$(PVER)
 p_tk	:= $(PVER)-tk
+p_gdbm := $(PVER)-gdbm
+p_tk_dbg	:= $(PVER)-tk-dbg
+p_gdbm_dbg := $(PVER)-gdbm-dbg
 p_dev	:= $(PVER)-dev
 p_exam	:= $(PVER)-examples
 p_idle	:= idle-$(PVER)
@@ -130,6 +136,9 @@ d_base	:= debian/$(p_base)
 d_min	:= debian/$(p_min)
 d_lib	:= debian/$(p_lib)
 d_tk	:= debian/$(p_tk)
+d_gdbm := debian/$(p_gdbm)
+d_tk_dbg	:= debian/$(p_tk_dbg)
+d_gdbm_dbg := debian/$(p_gdbm_dbg)
 d_dev	:= debian/$(p_dev)
 d_exam	:= debian/$(p_exam)
 d_idle	:= debian/$(p_idle)
@@ -146,7 +155,9 @@ ifeq ($(distribution),Debian)
 endif
 
 build: $(build_target)
-build-all: stamps/stamp-build
+build-all: build-arch build-indep
+build-indep: stamps/stamp-build
+build-arch: stamps/stamp-build
 stamps/stamp-build: stamps/stamp-build-static stamps/stamp-build-shared stamps/stamp-build-debug stamps/stamp-build-shared-debug stamps/stamp-mincheck stamps/stamp-check stamps/stamp-pystone stamps/stamp-pybench
 	touch stamps/stamp-build
 
@@ -205,6 +216,14 @@ common_configure_args = \
 		--with-computed-gotos \
 		--with-system-expat \
 
+ifeq ($(with_gdbm),yes)
+  common_configure_args += \
+		--with-dbmliborder=bdb:gdbm
+else
+  common_configure_args += \
+		--with-dbmliborder=bdb
+endif
+
 ifeq ($(DEB_HOST_ARCH), avr32)
   common_configure_args += --without-ffi
 else
@@ -216,8 +235,8 @@ ifeq ($(with_fpectl),yes)
 		--with-fpectl
 endif
 
-stamps/stamp-configure-shared: stamps/stamp-patch
-	rm -rf $(buildd_shared)
+stamps/stamp-configure-shared: stamps/stamp-configure
+	rm -rf $(buildd_shared) stamps/stamp-build-shared
 	mkdir -p $(buildd_shared)
 	cd $(buildd_shared) && \
 	  CC="$(CC)" $(OPTSETTINGS) \
@@ -236,8 +255,9 @@ stamps/stamp-configure-shared: stamps/stamp-patch
 
 	touch stamps/stamp-configure-shared
 
-stamps/stamp-configure-static: stamps/stamp-patch
-	rm -rf $(buildd_static)
+stamps/stamp-configure-static: stamps/stamp-configure
+	rm -rf $(buildd_static) stamps/stamp-build-static stamps/stamp-mincheck \
+	  stamps/stamp-check stamps/stamp-pystone stamps/stamp-pybench
 	mkdir -p $(buildd_static)
 	cd $(buildd_static) && \
 	  CC="$(CC)" $(OPTSETTINGS) \
@@ -260,8 +280,8 @@ stamps/stamp-configure-static: stamps/stamp-patch
 
 	touch stamps/stamp-configure-static
 
-stamps/stamp-configure-debug: stamps/stamp-patch
-	rm -rf $(buildd_debug)
+stamps/stamp-configure-debug: stamps/stamp-configure
+	rm -rf $(buildd_debug) stamps/stamp-build-debug
 	mkdir -p $(buildd_debug)
 	cd $(buildd_debug) && \
 	  CC="$(CC)" $(OPTDEBUGSETTINGS) CFLAGS="" CXXFLAGS="" \
@@ -285,8 +305,8 @@ stamps/stamp-configure-debug: stamps/stamp-patch
 
 	touch stamps/stamp-configure-debug
 
-stamps/stamp-configure-shared-debug: stamps/stamp-patch
-	rm -rf $(buildd_shdebug)
+stamps/stamp-configure-shared-debug: stamps/stamp-configure
+	rm -rf $(buildd_shdebug) stamps/stamp-build-shared-debug
 	mkdir -p $(buildd_shdebug)
 	cd $(buildd_shdebug) && \
 	  CC="$(CC)" $(OPTDEBUGSETTINGS) CFLAGS="" CXXFLAGS="" \
@@ -496,7 +516,7 @@ stamps/stamp-doc-html:
 	$(MAKE) -C Doc html
 	touch stamps/stamp-doc-html
 
-build-doc: stamps/stamp-patch stamps/stamp-build-doc
+build-doc: stamps/stamp-configure stamps/stamp-build-doc
 stamps/stamp-build-doc: stamps/stamp-doc-html
 	touch stamps/stamp-build-doc
 
@@ -524,8 +544,7 @@ endif
 clean: control-file
 	dh_testdir
 	dh_testroot
-	$(MAKE) -f debian/rules unpatch
-	rm -rf stamps .pc
+	rm -rf stamps
 	rm -f debian/test_results
 
 	$(MAKE) -C Doc clean
@@ -538,7 +557,7 @@ clean: control-file
 
 	for f in debian/*.in; do \
 	  f2=`echo $$f | sed "s,PVER,$(PVER),g;s/@VER@/$(VER)/g;s,\.in$$,,"`; \
-	  if [ $$f2 != debian/control ] && [ $$f2 != debian/source.lintian-overrides ]; then \
+	  if [ $$f2 != debian/control ]; then \
 	    rm -f $$f2; \
 	  fi; \
 	done
@@ -669,7 +688,7 @@ endif
 
 	: # Install sitecustomize.py.
 	cp -p debian/sitecustomize.py $(d_min)/etc/$(PVER)/
-	patch --no-backup -d $(d_min)/$(scriptdir) < debian/patches/site-builddir.diff
+	#patch --no-backup -d $(d_min)/$(scriptdir) < debian/patches/site-builddir.diff
 	dh_link -p$(p_min) /etc/$(PVER)/sitecustomize.py \
 		/$(scriptdir)/sitecustomize.py
 
@@ -707,6 +726,16 @@ ifeq ($(with_tk),yes)
 		usr/lib/python$(VER)/lib-dynload
 	DH_COMPAT=2 dh_movefiles -p$(p_tk) --sourcedir=$(d) \
 		usr/lib/python$(VER)/lib-dynload/_tkinter.so
+endif
+
+ifeq ($(with_gdbm),yes)
+	: # Move GDBM files into $(p_gdbm)
+	dh_installdirs -p$(p_gdbm) \
+		usr/lib/python$(VER)/dbm \
+		usr/lib/python$(VER)/lib-dynload
+	DH_COMPAT=2 dh_movefiles -p$(p_gdbm) --sourcedir=$(d) \
+		usr/lib/python$(VER)/lib-dynload/_gdbm.so \
+		usr/lib/python$(VER)/dbm/gnu.py
 endif
 
 #	: # The test framework into $(p_base), regression tests dropped
@@ -837,14 +866,24 @@ endif
 	  -e '/^Cflags:/s,python$(VER),python$(VER)_d,' \
 	  $(d)-dbg/usr/lib/pkgconfig/python-$(VER).pc \
 	  > $(d_dbg)/usr/lib/pkgconfig/python-$(VER)-dbg.pc
-ifneq ($(with_tk),yes)
-	rm -f $(d_dbg)/$(scriptdir)/lib-dynload/_tkinter_d.so
-	rm -f $(d_dbg)/usr/lib/debug/$(scriptdir)/lib-dynload/_tkinter.so
+
+ifeq ($(with_tk),yes)
+	# move debug files to corresponding debug package
+	dh_installdirs -p$(p_tk_dbg) $(scriptdir)/lib-dynload
+	dh_install --autodest -p$(p_tk_dbg) --sourcedir $(d_dbg) \
+		$(scriptdir)/lib-dynload/_tkinter*.so
 endif
-ifneq ($(with_gdbm),yes)
-	rm -f $(d_dbg)/$(scriptdir)/lib-dynload/_gdbm_d.so
-	rm -f $(d_dbg)/usr/lib/debug/$(scriptdir)/lib-dynload/_gdbm.so
+	rm -f $(d_dbg)/$(scriptdir)/lib-dynload/_tkinter*.so
+	rm -f $(d_dbg)/usr/lib/debug/$(scriptdir)/lib-dynload/_tkinter*.so
+
+ifeq ($(with_gdbm),yes)
+	# move debug files to corresponding debug package
+	dh_installdirs -p$(p_gdbm_dbg) $(scriptdir)/lib-dynload
+	dh_install --autodest -p$(p_gdbm_dbg) --sourcedir $(d_dbg) \
+		$(scriptdir)/lib-dynload/_gdbm*.so
 endif
+	rm -f $(d_dbg)/$(scriptdir)/lib-dynload/_gdbm*.so
+	rm -f $(d_dbg)/usr/lib/debug/$(scriptdir)/lib-dynload/_gdbm*.so
 
 	cp -a $(d)-dbg/$(scriptdir)/config_d $(d_dbg)/$(scriptdir)/
 	ln -sf ../../libpython$(VER)_d.so \
@@ -931,12 +970,19 @@ binary-arch: build install
 	  ln -s $(p_base) debian/$$i/usr/share/doc/$$i; \
 	done
 	-find debian ! -perm -200 -print -exec chmod +w {} \;
-ifneq ($(with_tk),yes)
-	rm -f $(d_base)/$(scriptdir)/lib-dynload/_tkinter.so
-endif
-	rm -f $(d_base)/$(scriptdir)/lib-dynload/_gdbm.so
 
-	dh_strip -a -N$(p_dbg) -Xdebug -Xdbg --dbg-package=$(p_dbg)
+ifneq ($(with_tk),yes)
+	rm -f $(d_base)/$(scriptdir)/lib-dynload/_tkinter*.so
+else
+	dh_strip -p$(p_tk) --dbg-package=$(p_tk_dbg)
+endif
+ifneq ($(with_gdbm),yes)
+	rm -f $(d_base)/$(scriptdir)/lib-dynload/_gdbm*.so
+else
+	dh_strip -p$(p_gdbm) --dbg-package=$(p_gdbm_dbg)
+endif
+
+	dh_strip -a -N$(p_dbg) -N$(p_tk) -N$(p_gdbm) -Xdebug -Xdbg --dbg-package=$(p_dbg)
 	cp Tools/gdb/libpython.py $(d_dbg)/usr/lib/debug/usr/bin/$(PVER)-gdb.py
 	ln -sf $(PVER)-gdb.py $(d_dbg)/usr/lib/debug/usr/bin/$(PVER)-dbg-gdb.py
 	ln -sf ../bin/$(PVER)-gdb.py \
@@ -970,51 +1016,18 @@ endif
 	dh_md5sums -a
 	dh_builddeb -a
 
-# rules to patch the unpacked files in the source directory
-# ---------------------------------------------------------------------------
-# various rules to unpack addons and (un)apply patches.
-# 	- patch / apply-patches
-#	- unpatch / reverse-patches
+patch: stamps/stamp-configure
 
-patchdir	= debian/patches
+stamps:
+	mkdir -p stamps
 
-glibc_version := $(shell dpkg -s locales | awk '/^Version:/ {print $$2}')
-broken_utimes := $(shell dpkg --compare-versions $(glibc_version) lt 2.3.5 && echo yes || echo no)
-
-$(patchdir)/series: $(patchdir)/series.in
-	cpp -E \
-	  -D$(distribution) \
-	  $(if $(filter $(broken_utimes),yes),-DBROKEN_UTIMES) \
-	  -Darch_os_$(DEB_HOST_ARCH_OS) -Darch_$(DEB_HOST_ARCH) \
-	  -o - $(patchdir)/series.in \
-	  | egrep -v '^(#.*|$$)' > $(patchdir)/series
-
-patch-stamp: stamps/stamp-patch
-patch: stamps/stamp-patch
-stamps/stamp-patch: $(patchdir)/series
-	dh_testdir
-	QUILT_PATCHES=$(patchdir) quilt push -a || test $$? = 2
+# Simply rebuild configure once to contain any changes made to configure.in by patches.
+stamps/stamp-configure: stamps configure.in
 	rm -rf autom4te.cache configure
 	autoconf
-	mkdir -p stamps
-	echo ""; echo "Patches applied in this version:" > stamps/pxx
-	for i in $$(cat $(patchdir)/series); do \
-	  echo ""; echo "$$i:"; \
-	  sed -n 's/^# *DP: */  /p' $(patchdir)/$$i; \
-	done >> stamps/pxx
-	mv stamps/pxx $@
+	autoheader
+	touch stamps/stamp-configure
 
-reverse-patches: unpatch
-unpatch:
-	QUILT_PATCHES=$(patchdir) quilt pop -a -R || test $$? = 2
-	rm -f stamps/stamp-patch $(patchdir)/series
-	rm -rf configure autom4te.cache
-
-update-patches: $(patchdir)/series
-	export QUILT_PATCHES=$(patchdir); \
-	export QUILT_REFRESH_ARGS="--no-timestamps --no-index -pab"; \
-	export QUILT_DIFF_ARGS="--no-timestamps --no-index -pab"; \
-	while quilt push; do quilt refresh; done
 
 binary: binary-indep binary-arch
 
