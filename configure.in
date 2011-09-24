@@ -569,7 +569,7 @@ AC_SUBST(LIBRARY)
 AC_MSG_CHECKING(LIBRARY)
 if test -z "$LIBRARY"
 then
-	LIBRARY='libpython$(VERSION).a'
+	LIBRARY='libpython$(VERSION)$(DEBUG_EXT).a'
 fi
 AC_MSG_RESULT($LIBRARY)
 
@@ -711,8 +711,8 @@ if test $enable_shared = "yes"; then
 	  INSTSONAME="$LDLIBRARY".$SOVERSION
           ;;
     Linux*|GNU*|NetBSD*|FreeBSD*|DragonFly*)
-	  LDLIBRARY='libpython$(VERSION).so'
-	  BLDLIBRARY='-L. -lpython$(VERSION)'
+	  LDLIBRARY='libpython$(VERSION)$(DEBUG_EXT).so'
+	  BLDLIBRARY='-L. -lpython$(VERSION)$(DEBUG_EXT)'
 	  RUNSHARED=LD_LIBRARY_PATH=`pwd`:${LD_LIBRARY_PATH}
 	  case $ac_sys_system in
 	      FreeBSD*)
@@ -834,6 +834,12 @@ then
 else AC_MSG_RESULT(no); Py_DEBUG='false'
 fi],
 [AC_MSG_RESULT(no)])
+
+if test "$Py_DEBUG" = 'true'
+then
+	DEBUG_EXT=_d
+fi
+AC_SUBST(DEBUG_EXT)
 
 # XXX Shouldn't the code above that fiddles with BASECFLAGS and OPT be
 # merged with this chunk of code?
@@ -1725,7 +1731,7 @@ then
 		esac
 		;;
 	CYGWIN*)   SO=.dll;;
-	*)	   SO=.so;;
+	*)	   SO=$DEBUG_EXT.so;;
 	esac
 else
 	# this might also be a termcap variable, see #610332
@@ -1812,7 +1818,7 @@ then
 			fi
 		fi
 		;;
-	Linux*|GNU*|QNX*) LDSHARED='$(CC) -shared';;
+	Linux*|GNU*|QNX*) LDSHARED='$(CC) -shared -Wl,-O1 -Wl,-Bsymbolic-functions';;
 	BSD/OS*/4*) LDSHARED="gcc -shared";;
 	FreeBSD*)
 		if [[ "`$CC -dM -E - </dev/null | grep __ELF__`" != "" ]]
@@ -1897,7 +1903,7 @@ then
 	    LINKFORSHARED="-Wl,-E -Wl,+s";;
 #	    LINKFORSHARED="-Wl,-E -Wl,+s -Wl,+b\$(BINLIBDEST)/lib-dynload";;
 	BSD/OS/4*) LINKFORSHARED="-Xlinker -export-dynamic";;
-	Linux*|GNU*) LINKFORSHARED="-Xlinker -export-dynamic";;
+	Linux*|GNU*) LINKFORSHARED="-Xlinker -export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions";;
 	# -u libsys_s pulls in all symbols in libsys
 	Darwin/*) 
 		LINKFORSHARED="$extra_undefs -framework CoreFoundation"
@@ -3501,6 +3507,11 @@ int main(void) {
    ac_cv_posix_semaphores_enabled=no,
    ac_cv_posix_semaphores_enabled=yes)
 )
+case $ac_sys_system in
+  Linux*)
+    # assume enabled, see https://launchpad.net/bugs/630511
+    ac_cv_posix_semaphores_enabled=yes
+esac
 AC_MSG_RESULT($ac_cv_posix_semaphores_enabled)
 if test $ac_cv_posix_semaphores_enabled = no
 then
@@ -3532,10 +3543,15 @@ int main(void){
   return res==-1 ? 1 : 0;
 }
 ]
-,AC_MSG_RESULT(no),
- AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_BROKEN_SEM_GETVALUE, 1, define to 1 if your sem_getvalue is broken.)
-)
+,AC_MSG_RESULT(no),[
+  case $ac_sys_system in
+    Linux*) # assume enabled, see https://launchpad.net/bugs/630511
+      AC_MSG_RESULT(no);;
+    *)
+      AC_MSG_RESULT(yes)
+      AC_DEFINE(HAVE_BROKEN_SEM_GETVALUE, 1, [define to 1 if your sem_getvalue is broken.])
+  esac
+])
 
 # determine what size digit to use for Python's longs
 AC_MSG_CHECKING([digit size for Python's longs])

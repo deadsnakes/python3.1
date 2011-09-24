@@ -362,9 +362,9 @@ class PyBuildExt(build_ext):
             os.unlink(tmpfile)
 
     def detect_modules(self):
-        # Ensure that /usr/local is always used
-        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
-        add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+        # On Debian /usr/local is always used, so we don't include it twice
+        #add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+        #add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
         self.add_multiarch_paths()
 
         # Add paths specified in the environment variables LDFLAGS and
@@ -415,11 +415,14 @@ class PyBuildExt(build_ext):
         # lib_dirs and inc_dirs are used to search for files;
         # if a file is found in one of those directories, it can
         # be assumed that no additional -I,-L directives are needed.
+        gnu_triplet = os.popen('dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || dpkg-architecture -qDEB_HOST_GNU_TYPE').readline()[:-1]
         lib_dirs = self.compiler.library_dirs + [
-            '/lib64', '/usr/lib64',
+            os.path.join('/lib', gnu_triplet),
+            os.path.join('/usr/lib', gnu_triplet),
             '/lib', '/usr/lib',
             ]
         inc_dirs = self.compiler.include_dirs + ['/usr/include']
+        inc_dirs.append(os.path.join('/usr/include', gnu_triplet))
         exts = []
         missing = []
 
@@ -1168,6 +1171,9 @@ class PyBuildExt(build_ext):
                                    libraries = [panel_library] + curses_libs) )
         else:
             missing.append('_curses_panel')
+
+        #fpectl fpectlmodule.c ...
+        exts.append( Extension('fpectl', ['fpectlmodule.c']) )
 
         # Andrew Kuchling's zlib module.  Note that some versions of zlib
         # 1.1.3 have security problems.  See CERT Advisory CA-2002-07:
