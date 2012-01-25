@@ -1,3 +1,9 @@
+python3.1 (3.1.4-2+precise1) precise; urgency=low
+
+  * Import from Oneiric package.
+
+ -- Felix Krull <f_krull@gmx.de>  Wed, 25 Jan 2012 13:35:53 +0100
+
 python3.1 (3.1.4-2+oneiric1) oneiric; urgency=low
 
   * Explicitly use include path for ncursesw. It seems regular ncurses
