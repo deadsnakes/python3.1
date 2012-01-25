@@ -1,7 +1,9 @@
 # Add /usr/include/ncursesw for the _curses and _cursespanel modules. Prior to
 # precise, libreadline-dev would pull in libncurses5-dev which provides
 # /usr/include/curses.h; but that's kinda wrong and doesn't work in precise
-# anymore, so we just use the correct include path right away.
+# anymore (at least on amd64), so we just use the correct include path right
+# away. See also:
+# http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=650600
 
 --- a/setup.py
 +++ b/setup.py
