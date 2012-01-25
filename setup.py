@@ -1162,8 +1162,7 @@ class PyBuildExt(build_ext):
                 curses_libs = ['curses']
 
             exts.append( Extension('_curses', ['_cursesmodule.c'],
-                                   libraries = curses_libs,
-                                   include_dirs = ncursesw_incdirs) )
+                                   libraries = curses_libs) )
         else:
             missing.append('_curses')
 
@@ -1171,7 +1170,8 @@ class PyBuildExt(build_ext):
         if (module_enabled(exts, '_curses') and
             self.compiler.find_library_file(lib_dirs, panel_library)):
             exts.append( Extension('_curses_panel', ['_curses_panel.c'],
-                                   libraries = [panel_library] + curses_libs) )
+                                   libraries = [panel_library] + curses_libs,
+                                   include_dirs = ncursesw_incdirs) )
         else:
             missing.append('_curses_panel')
 
