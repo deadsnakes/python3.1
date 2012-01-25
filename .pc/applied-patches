@@ -30,3 +30,4 @@ issue9054.diff
 link-system-expat.diff
 plat-gnukfreebsd.diff
 disable-sem-check.diff
+deadsnakes-ncursesw-include-dir.diff
