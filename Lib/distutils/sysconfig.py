@@ -83,8 +83,7 @@ def get_python_inc(plat_specific=0, prefix=None):
             else:
                 incdir = os.path.join(get_config_var('srcdir'), 'Include')
                 return os.path.normpath(incdir)
-        return os.path.join(prefix, "include",
-                            "python" + get_python_version() + (sys.pydebug and '_d' or ''))
+        return os.path.join(prefix, "include", "python" + get_python_version())
     elif os.name == "nt":
         return os.path.join(prefix, "include")
     elif os.name == "mac":
@@ -114,7 +113,6 @@ def get_python_lib(plat_specific=0, standard_lib=0, prefix=None):
     If 'prefix' is supplied, use it instead of sys.prefix or
     sys.exec_prefix -- i.e., ignore 'plat_specific'.
     """
-    is_default_prefix = not prefix or os.path.normpath(prefix) in ('/usr', '/usr/local')
     if prefix is None:
         prefix = plat_specific and EXEC_PREFIX or PREFIX
 
@@ -123,8 +121,6 @@ def get_python_lib(plat_specific=0, standard_lib=0, prefix=None):
                                  "lib", "python" + get_python_version())
         if standard_lib:
             return libpython
-        elif is_default_prefix and 'PYTHONUSERBASE' not in os.environ and 'real_prefix' not in sys.__dict__:
-            return os.path.join(prefix, "lib", "python3", "dist-packages")
         else:
             return os.path.join(libpython, "site-packages")
     elif os.name == "nt":
@@ -164,9 +160,8 @@ def customize_compiler(compiler):
     varies across Unices and is stored in Python's Makefile.
     """
     if compiler.compiler_type == "unix":
-        (cc, cxx, opt, cflags, extra_cflags, basecflags, ccshared, ldshared, so_ext, ar, ar_flags) = \
+        (cc, cxx, opt, cflags, ccshared, ldshared, so_ext, ar, ar_flags) = \
             get_config_vars('CC', 'CXX', 'OPT', 'CFLAGS',
-                            'EXTRA_CFLAGS', 'BASECFLAGS',
                             'CCSHARED', 'LDSHARED', 'SO', 'AR', 'ARFLAGS')
 
         if 'CC' in os.environ:
@@ -181,13 +176,8 @@ def customize_compiler(compiler):
             cpp = cc + " -E"           # not always
         if 'LDFLAGS' in os.environ:
             ldshared = ldshared + ' ' + os.environ['LDFLAGS']
-        if 'BASECFLAGS' in os.environ:
-            basecflags = os.environ['BASECFLAGS']
-        if 'OPT' in os.environ:
-            opt = os.environ['OPT']
-        cflags = ' '.join(str(x) for x in (basecflags, opt, extra_cflags) if x)
         if 'CFLAGS' in os.environ:
-            cflags = ' '.join(str(x) for x in (basecflags, opt, os.environ['CFLAGS'], extra_cflags) if x)
+            cflags = opt + ' ' + os.environ['CFLAGS']
             ldshared = ldshared + ' ' + os.environ['CFLAGS']
         if 'CPPFLAGS' in os.environ:
             cpp = cpp + ' ' + os.environ['CPPFLAGS']
@@ -236,7 +226,7 @@ def get_makefile_filename():
         return os.path.join(os.path.dirname(os.path.realpath(sys.executable)),
                             "Makefile")
     lib_dir = get_python_lib(plat_specific=1, standard_lib=1)
-    return os.path.join(lib_dir, "config" + (sys.pydebug and "_d" or ""), "Makefile")
+    return os.path.join(lib_dir, "config", "Makefile")
 
 
 def parse_config_h(fp, g=None):
