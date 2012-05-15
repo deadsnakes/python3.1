@@ -25,7 +25,7 @@
  Report printed:
 --- a/Misc/python.man
 +++ b/Misc/python.man
-@@ -309,7 +309,7 @@
+@@ -324,7 +324,7 @@
  These are subject to difference depending on local installation
  conventions; ${prefix} and ${exec_prefix} are installation-dependent
  and should be interpreted as for GNU software; they may be the same.
