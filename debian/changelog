@@ -1,4 +1,12 @@
-python3.1 (3.1.4-3+oneiric1) oneiric; urgency=low
+python3.1 (3.1.5-1+oneiric1) oneiric; urgency=low
+
+  * Imported new upstream release Python 3.1.5.
+  * Removed python3.1-profiler Suggests from python3.1 package.
+    - python3.1-profiler is provided by python3.1.
+
+ -- Felix Krull <f_krull@gmx.de>  Tue, 15 May 2012 14:46:28 +0200
+
+python3.1 (3.1.4-3+oneiric1) UNRELEASED; urgency=low
 
   * Add python3.1-complete metapackage.
 
