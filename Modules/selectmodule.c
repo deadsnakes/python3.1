@@ -1719,7 +1719,7 @@ descriptors can be used.");
 
 static PyMethodDef select_methods[] = {
     {"select",          select_select,  METH_VARARGS,   select_doc},
-#ifdef HAVE_POLL
+#if defined(HAVE_POLL) && !defined(HAVE_BROKEN_POLL)
     {"poll",            select_poll,    METH_NOARGS,    poll_doc},
 #endif /* HAVE_POLL */
     {0,         0},     /* sentinel */
@@ -1756,7 +1756,7 @@ PyInit_select(void)
     Py_INCREF(SelectError);
     PyModule_AddObject(m, "error", SelectError);
 
-#if defined(HAVE_POLL)
+#if defined(HAVE_POLL) && !defined(HAVE_BROKEN_POLL)
 #ifdef __APPLE__
     if (select_have_broken_poll()) {
         if (PyObject_DelAttrString(m, "poll") == -1) {
