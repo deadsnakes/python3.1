@@ -596,10 +596,9 @@ endif
 	find $(d)/usr/lib/python$(VER) -name '*_failed*.so' | xargs -r rm -f
 
 	mkdir -p $(d)/usr/lib/python3
-	mv $(d)/usr/lib/python$(VER)/site-packages \
-		$(d)/usr/lib/python3/dist-packages
+	rm -rf $(d)/usr/lib/python$(VER)/site-packages
 
-	: # remove files, which are not packaged
+	: # remove files which are not packaged
 	rm -f $(d)/usr/bin/smtpd.py
 	rm -rf $(d)/usr/lib/python$(VER)/ctypes/macholib
 	rm -f $(d)/usr/lib/pkgconfig/python3.pc
@@ -714,6 +713,9 @@ endif
 		usr/bin/python$(VER)-config \
 		usr/lib/python$(VER)/distutils/command/wininst-*.exe
 
+	rm $(d)/usr/lib/libpython$(VER).a
+	dh_link -p$(p_dev) usr/lib/python$(VER)/config/libpython$(VER).a \
+		usr/lib/libpython$(VER).a
 	mv $(d_dev)/usr/include/python$(VER)/pyconfig.h \
 		$(d)/usr/include/python$(VER)/
 	cp -p $(buildd_shared)/libpython$(VER)-pic.a \
@@ -814,9 +816,9 @@ ifeq ($(with_tk),yes)
 endif
 
 	: # The rest goes into $(p_base)
-	mkdir -p $(d)/usr/lib/python$(VER)/dist-packages
 	(cd $(d) && tar cf - .) | (cd $(d_base) && tar xpf -)
 	rm -f $(d_base)/usr/bin/python
+	dh_installdirs -p$(p_base) usr/lib/python3/dist-packages
 
 	: # Install menu icon
 	dh_installdirs -p$(p_base) usr/share/pixmaps
@@ -837,7 +839,7 @@ endif
 	-find debian -name '*.py[co]' | xargs rm -f
 
 	: # remove empty directories, when all components are in place
-	-find debian ! -name lib-dynload -type d -empty -delete
+	-find debian ! -name lib-dynload ! -name dist-packages -type d -empty -delete
 
 	: # install debug package
 	rm -rf $(d)-dbg
