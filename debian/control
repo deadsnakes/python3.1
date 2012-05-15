@@ -15,7 +15,7 @@ Package: python3.1
 Architecture: any
 Priority: optional
 Depends: python3.1-minimal (= ${binary:Version}), mime-support, ${shlibs:Depends}, ${misc:Depends}
-Suggests: python3.1-doc, python3.1-profiler, binutils
+Suggests: python3.1-doc, binutils
 Provides: python3.1-cjkcodecs, python3.1-ctypes, python3.1-elementtree, python3.1-celementtree, python3.1-wsgiref, python3.1-profiler
 XB-Python-Version: 3.1
 Description: An interactive high-level object-oriented language (version 3.1)
