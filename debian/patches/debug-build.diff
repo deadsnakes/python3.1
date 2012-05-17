@@ -57,7 +57,7 @@
  # Short name and location for Mac OS X Python framework
  UNIVERSALSDK=@UNIVERSALSDK@
  PYTHONFRAMEWORK=	@PYTHONFRAMEWORK@
-@@ -436,7 +438,7 @@
+@@ -437,7 +439,7 @@
  	$(AR) $(ARFLAGS) $@ $(MODOBJS)
  	$(RANLIB) $@
  
@@ -66,7 +66,7 @@
  	if test $(INSTSONAME) != $(LDLIBRARY); then \
  		$(BLDSHARED) $(LDFLAGS) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
  		$(LN) -f $(INSTSONAME) $@; \
-@@ -964,8 +966,8 @@
+@@ -965,8 +967,8 @@
  	$(INSTALL_DATA) pyconfig.h $(DESTDIR)$(CONFINCLUDEPY)/pyconfig.h
  
  # Install the library and miscellaneous stuff needed for extending/embedding
@@ -107,7 +107,7 @@
  #endif
 --- a/Python/sysmodule.c
 +++ b/Python/sysmodule.c
-@@ -1389,6 +1389,12 @@
+@@ -1391,6 +1391,12 @@
                          PyUnicode_FromString("legacy"));
  #endif
  
@@ -120,8 +120,8 @@
  #undef SET_SYS_FROM_STRING
      if (PyErr_Occurred())
          return NULL;
---- a/configure.in
-+++ b/configure.in
+--- a/configure.ac
++++ b/configure.ac
 @@ -569,7 +569,7 @@
  AC_MSG_CHECKING(LIBRARY)
  if test -z "$LIBRARY"

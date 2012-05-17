@@ -1,7 +1,7 @@
 # DP: Call the linker with -O1 -Bsymbolic-functions
 
---- a/configure.in
-+++ b/configure.in
+--- a/configure.ac
++++ b/configure.ac
 @@ -1812,7 +1812,7 @@
  			fi
  		fi

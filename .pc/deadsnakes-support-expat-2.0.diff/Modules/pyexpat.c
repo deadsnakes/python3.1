@@ -1248,9 +1248,8 @@ newxmlparseobject(char *encoding, char *namespace_separator, PyObject *intern)
     else {
         self->itself = XML_ParserCreate(encoding);
     }
-    /* That function is new in expat 2.1 which isn't in oneiric.
     XML_SetHashSalt(self->itself,
-                    (unsigned long)_Py_HashSecret.prefix); */
+                    (unsigned long)_Py_HashSecret.prefix);
     self->intern = intern;
     Py_XINCREF(self->intern);
 #ifdef Py_TPFLAGS_HAVE_GC

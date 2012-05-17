@@ -3,7 +3,7 @@
 
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -398,9 +398,11 @@
+@@ -399,9 +399,11 @@
  	$(MAKE) all CFLAGS="$(CFLAGS) -fprofile-generate" LIBS="$(LIBS) -lgcov"
  
  run_profile_task:
