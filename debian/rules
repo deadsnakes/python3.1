@@ -661,12 +661,14 @@ endif
 	dh_installdirs -p$(p_min) \
 		etc/$(PVER) \
 		usr/bin \
+		usr/include/$(PVER) \
 		usr/share/man/man1 \
 		$(scriptdir)/lib-dynload \
 		$(scriptdir)/config
 	DH_COMPAT=2 dh_movefiles -p$(p_min) --sourcedir=$(d) \
 		usr/bin/python$(VER) \
 		usr/share/man/man1/python$(VER).1 \
+		usr/include/$(PVER)/pyconfig.h \
 		$(foreach i,$(MIN_MODS),$(scriptdir)/$(i).py) \
 		$(foreach i,$(MIN_PACKAGES),$(scriptdir)/$(i)) \
 		$(foreach i,$(MIN_ENCODINGS),$(scriptdir)/$(i)) \
@@ -716,8 +718,6 @@ endif
 	rm $(d)/usr/lib/libpython$(VER).a
 	dh_link -p$(p_dev) usr/lib/python$(VER)/config/libpython$(VER).a \
 		usr/lib/libpython$(VER).a
-	mv $(d_dev)/usr/include/python$(VER)/pyconfig.h \
-		$(d)/usr/include/python$(VER)/
 	cp -p $(buildd_shared)/libpython$(VER)-pic.a \
 		$(d_dev)/usr/lib/python$(VER)/config/
 
