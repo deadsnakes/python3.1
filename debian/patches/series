@@ -33,3 +33,4 @@ plat-gnukfreebsd.diff
 disable-sem-check.diff
 deadsnakes-ncursesw-include-dir.diff
 deadsnakes-support-expat-2.0.diff
+deadsnakes-libdb-versions.diff
