@@ -415,14 +415,11 @@ class PyBuildExt(build_ext):
         # lib_dirs and inc_dirs are used to search for files;
         # if a file is found in one of those directories, it can
         # be assumed that no additional -I,-L directives are needed.
-        gnu_triplet = os.popen('dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || dpkg-architecture -qDEB_HOST_GNU_TYPE').readline()[:-1]
         lib_dirs = self.compiler.library_dirs + [
-            os.path.join('/lib', gnu_triplet),
-            os.path.join('/usr/lib', gnu_triplet),
+            '/lib64', '/usr/lib64',
             '/lib', '/usr/lib',
             ]
         inc_dirs = self.compiler.include_dirs + ['/usr/include']
-        inc_dirs.append(os.path.join('/usr/include', gnu_triplet))
         exts = []
         missing = []
 
