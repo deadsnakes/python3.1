@@ -2,7 +2,7 @@
 
 --- a/setup.py
 +++ b/setup.py
-@@ -1172,6 +1172,9 @@
+@@ -1169,6 +1169,9 @@
          else:
              missing.append('_curses_panel')
  
