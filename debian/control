@@ -176,7 +176,7 @@ Depends:
  python3.1-gdbm (>= ${binary:Version}),
  python3.1-tk-dbg (>= ${binary:Version}),
  python3.1-gdbm-dbg (>= ${binary:Version}),
- ${shlibs:Depends}, ${misc:Depends}
+ ${misc:Depends}
 XB-Python-Version: 3.1
 Description: Interactive high-level object-oriented language (version 3.1)
  Version 3.1 of the high-level, interactive object oriented language,
