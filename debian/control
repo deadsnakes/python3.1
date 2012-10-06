@@ -27,7 +27,7 @@ Depends: python3.1-minimal (= ${binary:Version}), mime-support, ${shlibs:Depends
 Suggests: python3.1-doc, binutils
 Provides: python3.1-cjkcodecs, python3.1-ctypes, python3.1-elementtree, python3.1-celementtree, python3.1-wsgiref, python3.1-profiler
 XB-Python-Version: 3.1
-Description: An interactive high-level object-oriented language (version 3.1)
+Description: Interactive high-level object-oriented language (version 3.1)
  Version 3.1 of the high-level, interactive object oriented language,
  includes an extensive class library with lots of goodies for
  network programming, system administration, sounds and graphics.
@@ -41,7 +41,7 @@ Suggests: binfmt-support
 Conflicts: binfmt-support (<< 1.1.2)
 XB-Python-Runtime: python3.1
 XB-Python-Version: 3.1
-Description: A minimal subset of the Python language (version 3.1)
+Description: Minimal subset of the Python language (version 3.1)
  This package contains the interpreter and some essential modules.  It can
  be used in the boot process for some basic tasks.
  See /usr/share/doc/python3.1-minimal/README.Debian for a list of the modules
@@ -83,7 +83,7 @@ Architecture: all
 Depends: python3.1, python3.1-tk, ${misc:Depends}
 Enhances: python3.1
 XB-Python-Version: 3.1
-Description: An IDE for Python (version 3.1) using Tkinter
+Description: IDE for Python (version 3.1) using Tkinter
  IDLE is an Integrated Development Environment for Python (version 3.1).
  IDLE is written using Tkinter and therefore quite platform-independent.
 
@@ -125,8 +125,8 @@ Provides: ${python:Provides}
 Suggests: tix, python3.1-tk-dbg
 XB-Python-Version: ${python:Versions}
 Description: Tkinter - Writing Tk applications with Python (version 3.1)
- A module for writing portable GUI applications with Python (version 3.1) using Tk.
- Also known as Tkinter.
+ A module for writing portable GUI applications with Python (version 3.1)
+ using Tk. Also known as Tkinter.
 
 Package: python3.1-gdbm
 Architecture: any
@@ -144,10 +144,10 @@ Priority: extra
 Section: debug
 Depends: python3.1, ${python:Depends}, python3.1-tk (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: Tkinter - Writing Tk applications with Python (version 3.1 debug extension)
- A module for writing portable GUI applications with Python (version 3.1) using Tk.
- Also known as Tkinter.
+ A module for writing portable GUI applications with Python (version 3.1)
+ using Tk. Also known as Tkinter.
  .
- This package contains the extensions built for the python debug interpreter.
+ This package contains the extensions built for the Python debug interpreter.
 
 Package: python3.1-gdbm-dbg
 Architecture: any
@@ -158,7 +158,7 @@ Description: GNU dbm database support for Python (version 3.1 debug extension)
  GNU dbm database module for Python (version 3.1). Install this if you want to
  create or read GNU dbm database files with Python.
  .
- This package contains the extensions built for the python debug interpreter.
+ This package contains the extensions built for the Python debug interpreter.
 
 
 Package: python3.1-complete
@@ -166,7 +166,6 @@ Architecture: all
 Priority: extra
 Depends:
  python3.1 (>= ${binary:Version}),
- python3.1-minimal (>= ${binary:Version}),
  libpython3.1 (>= ${binary:Version}),
  python3.1-examples (>= ${binary:Version}),
  python3.1-dev (>= ${binary:Version}),
@@ -179,7 +178,7 @@ Depends:
  python3.1-gdbm-dbg (>= ${binary:Version}),
  ${shlibs:Depends}, ${misc:Depends}
 XB-Python-Version: 3.1
-Description: An interactive high-level object-oriented language (version 3.1)
+Description: Interactive high-level object-oriented language (version 3.1)
  Version 3.1 of the high-level, interactive object oriented language,
  includes an extensive class library with lots of goodies for
  network programming, system administration, sounds and graphics.
