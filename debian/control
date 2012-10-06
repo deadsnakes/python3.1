@@ -3,7 +3,7 @@ Section: python
 Priority: optional
 Maintainer: Felix Krull <f_krull@gmx.de>
 XSBC-Original-Maintainer: Matthias Klose <doko@debian.org>
-Build-Depends: debhelper (>= 5), autoconf,
+Build-Depends: debhelper (>= 7), autoconf,
    mime-support, netbase, lsb-release, bzip2,
    zlib1g-dev, libbz2-dev, libdb-dev, libssl-dev, libreadline-dev,
    libncursesw5-dev (>= 5.3), tk8.5-dev, blt-dev (>= 2.4z), libgpm2 [!hurd-i386 !kfreebsd-i386 !kfreebsd-amd64],
