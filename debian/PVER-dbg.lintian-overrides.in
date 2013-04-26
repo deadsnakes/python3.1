@@ -4,3 +4,4 @@
 
 # yeah it's fine
 @PVER@-dbg binary: python-script-but-no-python-dep usr/lib/debug/*
+@PVER@-dbg binary: unusual-interpreter usr/bin/@PVER@-dbg-config #!/usr/bin/@PVER@-dbg
