@@ -82,6 +82,8 @@ Package: idle-python3.1
 Architecture: all
 Depends: python3.1, python3.1-tk, ${misc:Depends}
 Enhances: python3.1
+Breaks: python3.1 (<< 3.1.5-3)
+Replaces: python3.1 (<< 3.1.5-3)
 XB-Python-Version: 3.1
 Description: IDE for Python (version 3.1) using Tkinter
  IDLE is an Integrated Development Environment for Python (version 3.1).
