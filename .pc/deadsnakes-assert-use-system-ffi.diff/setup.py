@@ -1028,7 +1028,7 @@ class PyBuildExt(build_ext):
                                   include_dirs=["Modules/_sqlite",
                                                 sqlite_incdir],
                                   library_dirs=sqlite_libdir,
-                                  #runtime_library_dirs=sqlite_libdir,
+                                  runtime_library_dirs=sqlite_libdir,
                                   extra_link_args=sqlite_extra_link_args,
                                   libraries=["sqlite3",]))
         else:
@@ -1090,7 +1090,7 @@ class PyBuildExt(build_ext):
                         print("building dbm using bdb")
                         dbmext = Extension('_dbm', ['_dbmmodule.c'],
                                            library_dirs=dblib_dir,
-                                           #runtime_library_dirs=dblib_dir,
+                                           runtime_library_dirs=dblib_dir,
                                            include_dirs=db_incs,
                                            define_macros=[
                                                ('HAVE_BERKDB_H', None),
@@ -1740,10 +1740,6 @@ class PyBuildExt(build_ext):
             ext.include_dirs.extend(ffi_inc)
             ext.libraries.append(ffi_lib)
             self.use_system_libffi = True
-
-        if not self.use_system_libffi:
-            print("Error: not using system libffi", file=sys.stderr)
-            sys.exit(1)
 
 
 class PyBuildInstall(install):
