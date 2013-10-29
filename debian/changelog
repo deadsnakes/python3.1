@@ -1,3 +1,11 @@
+python3.1 (3.1.5-4+precise1) precise; urgency=low
+
+  * Use hardening build flags.
+  * Fix ncurses header detection. #6
+    - See also LP #1021783
+
+ -- Felix Krull <f_krull@gmx.de>  Tue, 29 Oct 2013 11:50:42 +0100
+
 python3.1 (3.1.5-4+saucy1) saucy; urgency=low
 
   * Use hardening build flags.
