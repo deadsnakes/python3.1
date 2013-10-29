@@ -1,3 +1,9 @@
+python3.1 (3.1.5-4+raring1) raring; urgency=low
+
+  * Imported from Precise package.
+
+ -- Felix Krull <f_krull@gmx.de>  Tue, 29 Oct 2013 15:14:04 +0100
+
 python3.1 (3.1.5-4+precise1) precise; urgency=low
 
   * Use hardening build flags.
