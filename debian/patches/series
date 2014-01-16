@@ -37,3 +37,4 @@ deadsnakes-libdb-versions.diff
 deadsnakes-assert-use-system-ffi.diff
 deadsnakes-no-rpath.diff
 deadsnakes-platform-linux2.diff
+deadsnakes-fix-sphinx1.2-docs-build.diff
