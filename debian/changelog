@@ -1,3 +1,10 @@
+python3.1 (3.1.5-5+precise1) precise; urgency=low
+
+  * Have `sys.platform` be "linux2" even on Linux 3.* systems.
+  * Fix doc build for Sphinx 1.2+.
+
+ -- Felix Krull <f_krull@gmx.de>  Sun, 26 Jan 2014 00:23:09 +0100
+
 python3.1 (3.1.5-4+quantal1) quantal; urgency=low
 
   * Imported from Precise package.
