@@ -258,7 +258,6 @@ then
 	MACHDEP="$ac_md_system$ac_md_release"
 
 	case $MACHDEP in
-	linux*) MACHDEP="linux2";;
 	cygwin*) MACHDEP="cygwin";;
 	darwin*) MACHDEP="darwin";;
 	atheos*) MACHDEP="atheos";;
