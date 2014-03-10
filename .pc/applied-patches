@@ -6,6 +6,7 @@ locale-module.diff
 distutils-link.diff
 distutils-sysconfig.diff
 tkinter-import.diff
+gdbm-import.diff
 link-opt.diff
 debug-build.diff
 webbrowser.diff
