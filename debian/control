@@ -27,6 +27,8 @@ Priority: optional
 Depends: python3.1-minimal (= ${binary:Version}), mime-support, ${shlibs:Depends}, ${misc:Depends}
 Suggests: python3.1-doc, binutils
 Provides: python3.1-cjkcodecs, python3.1-ctypes, python3.1-elementtree, python3.1-celementtree, python3.1-wsgiref, python3.1-profiler
+Replaces: python3.1-gdbm (<< 3.1.5-6)
+Breaks: python3.1-gdbm (<< 3.1.5-6)
 XB-Python-Version: 3.1
 Description: Interactive high-level object-oriented language (version 3.1)
  Version 3.1 of the high-level, interactive object oriented language,
