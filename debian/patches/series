@@ -6,6 +6,7 @@ locale-module.diff
 distutils-link.diff
 distutils-sysconfig.diff
 tkinter-import.diff
+gdbm-import.diff
 link-opt.diff
 debug-build.diff
 webbrowser.diff
@@ -38,3 +39,4 @@ deadsnakes-assert-use-system-ffi.diff
 deadsnakes-no-rpath.diff
 deadsnakes-platform-linux2.diff
 deadsnakes-fix-sphinx1.2-docs-build.diff
+ext-no-libpython-link.diff
