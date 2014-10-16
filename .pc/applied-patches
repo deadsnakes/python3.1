@@ -39,3 +39,4 @@ deadsnakes-no-rpath.diff
 deadsnakes-platform-linux2.diff
 deadsnakes-fix-sphinx1.2-docs-build.diff
 ext-no-libpython-link.diff
+libffi-shared.diff
