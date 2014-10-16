@@ -40,3 +40,4 @@ deadsnakes-platform-linux2.diff
 deadsnakes-fix-sphinx1.2-docs-build.diff
 ext-no-libpython-link.diff
 libffi-shared.diff
+readline-6.3-compat.diff
