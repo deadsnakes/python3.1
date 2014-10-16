@@ -54,20 +54,20 @@
  PyBytes_Repr@Base @VER@
  PyBytes_Size@Base @VER@
  PyBytes_Type@Base @VER@
- PyCArgObject_new@Base @VER@
- PyCArg_Type@Base @VER@
- PyCArrayType_Type@Base @VER@
- PyCArrayType_from_ctype@Base @VER@
- PyCArray_Type@Base @VER@
- PyCData_AtAddress@Base @VER@
- PyCData_FromBaseObj@Base @VER@
- PyCData_Type@Base @VER@
- PyCData_get@Base @VER@
- PyCData_set@Base @VER@
- PyCField_FromDesc@Base @VER@
- PyCField_Type@Base @VER@
- PyCFuncPtrType_Type@Base @VER@
- PyCFuncPtr_Type@Base @VER@
+ (optional)PyCArgObject_new@Base @VER@
+ (optional)PyCArg_Type@Base @VER@
+ (optional)PyCArrayType_Type@Base @VER@
+ (optional)PyCArrayType_from_ctype@Base @VER@
+ (optional)PyCArray_Type@Base @VER@
+ (optional)PyCData_AtAddress@Base @VER@
+ (optional)PyCData_FromBaseObj@Base @VER@
+ (optional)PyCData_Type@Base @VER@
+ (optional)PyCData_get@Base @VER@
+ (optional)PyCData_set@Base @VER@
+ (optional)PyCField_FromDesc@Base @VER@
+ (optional)PyCField_Type@Base @VER@
+ (optional)PyCFuncPtrType_Type@Base @VER@
+ (optional)PyCFuncPtr_Type@Base @VER@
  PyCFunction_Call@Base @VER@
  PyCFunction_ClearFreeList@Base @VER@
  PyCFunction_Fini@Base @VER@
@@ -84,14 +84,14 @@
  PyCObject_Import@Base @VER@
  PyCObject_SetVoidPtr@Base @VER@
  PyCObject_Type@Base @VER@
- PyCPointerType_Type@Base @VER@
- PyCPointer_Type@Base @VER@
- PyCSimpleType_Type@Base @VER@
- PyCStgDict_Type@Base @VER@
- PyCStgDict_clone@Base @VER@
- PyCStructType_Type@Base @VER@
- PyCStructUnionType_update_stgdict@Base @VER@
- PyCThunk_Type@Base @VER@
+ (optional)PyCPointerType_Type@Base @VER@
+ (optional)PyCPointer_Type@Base @VER@
+ (optional)PyCSimpleType_Type@Base @VER@
+ (optional)PyCStgDict_Type@Base @VER@
+ (optional)PyCStgDict_clone@Base @VER@
+ (optional)PyCStructType_Type@Base @VER@
+ (optional)PyCStructUnionType_update_stgdict@Base @VER@
+ (optional)PyCThunk_Type@Base @VER@
  PyCallIter_New@Base @VER@
  PyCallIter_Type@Base @VER@
  PyCallable_Check@Base @VER@
@@ -162,7 +162,7 @@
  PyDict_DelItemString@Base @VER@
  PyDict_Fini@Base @VER@
  PyDict_GetItem@Base @VER@
- PyDict_GetItemProxy@Base @VER@
+ (optional)PyDict_GetItemProxy@Base @VER@
  PyDict_GetItemString@Base @VER@
  PyDict_GetItemWithError@Base @VER@
  PyDict_Items@Base @VER@
@@ -172,7 +172,7 @@
  PyDict_New@Base @VER@
  PyDict_Next@Base @VER@
  PyDict_SetItem@Base @VER@
- PyDict_SetItemProxy@Base @VER@
+ (optional)PyDict_SetItemProxy@Base @VER@
  PyDict_SetItemString@Base @VER@
  PyDict_Size@Base @VER@
  PyDict_Type@Base @VER@
@@ -236,7 +236,7 @@
  PyEval_SetProfile@Base @VER@
  PyEval_SetTrace@Base @VER@
  PyEval_ThreadsInitialized@Base @VER@
- PyExc_ArgError@Base @VER@
+ (optional)PyExc_ArgError@Base @VER@
  PyExc_ArithmeticError@Base @VER@
  PyExc_AssertionError@Base @VER@
  PyExc_AttributeError@Base @VER@
@@ -581,7 +581,7 @@
  PyObject_Size@Base @VER@
  PyObject_Str@Base @VER@
  PyObject_Type@Base @VER@
- PyObject_stgdict@Base @VER@
+ (optional)PyObject_stgdict@Base @VER@
  PyParser_ASTFromFile@Base @VER@
  PyParser_ASTFromString@Base @VER@
  PyParser_AddToken@Base @VER@
@@ -744,7 +744,7 @@
  PyType_Modified@Base @VER@
  PyType_Ready@Base @VER@
  PyType_Type@Base @VER@
- PyType_stgdict@Base @VER@
+ (optional)PyType_stgdict@Base @VER@
  PyUnicodeDecodeError_Create@Base @VER@
  PyUnicodeDecodeError_GetEncoding@Base @VER@
  PyUnicodeDecodeError_GetEnd@Base @VER@
@@ -1273,49 +1273,6 @@
 
  (optional|regex)"^_ctypes_.*@Base$" @VER@
  (optional|regex)"^ffi_type_.*@Base$" @VER@
+ (optional|regex)"^ffi_closure_.*@Base$" @VER@
 
- (optional)PyInit__ast@Base @VER@
- (optional)PyInit__bisect@Base @VER@
- (optional)PyInit__codecs@Base @VER@
- (optional)PyInit__collections@Base @VER@
- (optional)PyInit__ctypes@Base @VER@
- (optional)PyInit__elementtree@Base @VER@
- (optional)PyInit__functools@Base @VER@
- (optional)PyInit__hashlib@Base @VER@
- (optional)PyInit__heapq@Base @VER@
- (optional)PyInit__io@Base @VER@
- (optional)PyInit__locale@Base @VER@
- (optional)PyInit__pickle@Base @VER@
- (optional)PyInit__random@Base @VER@
- (optional)PyInit__socket@Base @VER@
- (optional)PyInit__sre@Base @VER@
- (optional)PyInit__ssl@Base @VER@
- (optional)PyInit__struct@Base @VER@
- (optional)PyInit__symtable@Base @VER@
- (optional)PyInit__thread@Base @VER@
- (optional)PyInit__weakref@Base @VER@
- (optional)PyInit_array@Base @VER@
- (optional)PyInit_atexit@Base @VER@
- (optional)PyInit_binascii@Base @VER@
- (optional)PyInit_cmath@Base @VER@
- (optional)PyInit_datetime@Base @VER@
- (optional)PyInit_errno@Base @VER@
- (optional)PyInit_fcntl@Base @VER@
- (optional)PyInit_gc@Base @VER@
- (optional)PyInit_grp@Base @VER@
- (optional)PyInit_imp@Base @VER@
- (optional)PyInit_itertools@Base @VER@
- (optional)PyInit_math@Base @VER@
- (optional)PyInit_operator@Base @VER@
- (optional)PyInit_posix@Base @VER@
- (optional)PyInit_pwd@Base @VER@
- (optional)PyInit_pyexpat@Base @VER@
- (optional)PyInit_select@Base @VER@
- (optional)PyInit_signal@Base @VER@
- (optional)PyInit_spwd@Base @VER@
- (optional)PyInit_syslog@Base @VER@
- (optional)PyInit_time@Base @VER@
- (optional)PyInit_unicodedata@Base @VER@
- (optional)PyInit_xxsubtype@Base @VER@
- (optional)PyInit_zipimport@Base @VER@
- (optional)PyInit_zlib@Base @VER@
+ (optional|regex)"^PyInit_.*@Base$" @VER@
