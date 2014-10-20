@@ -1,9 +1,8 @@
 Tests: regr6-curses-newpad
 Depends: @PVER@
 
-# Not on precise
-#Tests: regr17-apt_pkg-import
-#Depends: @PVER@-minimal, python3-apport
+Tests: regr17-apt_pkg-import
+Depends: @PVER@-minimal, python3-apport
 
 Tests: regr20-check-dynamic-ctypes
 Depends: libc-bin, @PVER@, @PVER@-dbg
